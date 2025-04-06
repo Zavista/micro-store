@@ -1,11 +1,14 @@
 package com.store.microservices.product.service;
 
 import com.store.microservices.product.dto.ProductRequest;
+import com.store.microservices.product.dto.ProductResponse;
 import com.store.microservices.product.models.Product;
 import com.store.microservices.product.repository.ProductRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @Slf4j
@@ -18,7 +21,7 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    public Product createProduct(ProductRequest productRequest) {
+    public ProductResponse createProduct(ProductRequest productRequest) {
         Product product = new Product(
                 productRequest.id(),
                 productRequest.name(),
@@ -28,6 +31,15 @@ public class ProductService {
         productRepository.save(product);
         log.info("Product created: {}", product);
 
-        return product;
+        return new ProductResponse(product.getId(), product.getName(), product.getDescription(), product.getPrice());
+    }
+
+    public List<ProductResponse> getAllProducts() {
+        List<ProductResponse> products = productRepository.findAll()
+                .stream()
+                .map(product -> new ProductResponse(product.getId(), product.getName(), product.getDescription(), product.getPrice()))
+                .toList();
+        log.info("Products retrieved: {}", products);
+        return products;
     }
 }
