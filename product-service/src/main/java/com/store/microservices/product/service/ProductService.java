@@ -22,12 +22,11 @@ public class ProductService {
     }
 
     public ProductResponse createProduct(ProductRequest productRequest) {
-        Product product = new Product(
-                productRequest.id(),
-                productRequest.name(),
-                productRequest.description(),
-                productRequest.price()
-        );
+        Product product = Product.builder()
+                .name(productRequest.name())
+                .description(productRequest.description())
+                .price(productRequest.price())
+                .build();
         productRepository.save(product);
         log.info("Product created: {}", product);
 
